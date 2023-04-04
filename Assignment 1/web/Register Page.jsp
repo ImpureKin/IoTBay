@@ -28,7 +28,7 @@
           height: 80px;
           margin: 0;
           position: absolute;
-          top: 50%;
+          top: 45%;
           left: 50%;
           -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
@@ -46,14 +46,12 @@
                 <h1>Register Page</h1>
             </div>
             <div class="textcenter">
-                <form action="Welcome Page.jsp">
+                <form id="myform" action="Welcome Page.jsp">
                     <label for="email">Email:</label><br><br>
-                    <input type="email" id="email" name="email"><br><br>
+                    <input type="email" id="email" name="email" required><br><br>
                     <label for="password">Password:</label><br><br>
-                    <input type="password" id="password" name="password"><br><br>
-                    <label for="conpassword">Confirm Password:</label><br><br>
-                    <input type="password" id="conpassword" name="conpassword"><br><br><br>
-                    <input type="submit" value="Submit">
+                    <input type="password" id="password" name="password" required><br><br><br>
+                    <input type="submit" id="submit" value="Submit">
                 </form>
             </div>
         </div>
