@@ -63,9 +63,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <div class="textcenter">
             <form action="Welcome Page.jsp">
                 <label for="email">Email:</label><br><br>
-                <input type="email" id="email" name="email"><br><br>
+                <input type="email" id="email" name="email" required><br><br>
                 <label for="password">Password:</label><br><br>
-                <input type="password" id="password" name="password"><br><br><br>
+                <input type="password" id="password" name="password" required><br><br><br>
                 <input type="submit" value="Submit">
             </form>
         </div>
@@ -76,5 +76,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <button type="button" style="height:40px;width:100px" onClick="location.href='Register Page.jsp'">Register</button><br><br><br><br><br><br><br><br>
         </div>
     </div>
+    <script>
+    function validate() {
+    var x = document.getElementById("password");
+        if (x.value === null){
+            return;
+        } else {
+            alert("You must enter a password");
+        }
+    }
+    </script>  
     </body>
 </html>
