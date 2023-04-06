@@ -61,11 +61,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <h1>of Things Bay</h1>
         </div>
         <div class="textcenter">
-            <form action="Welcome Page.jsp">
+            <form action="LoginCheck.jsp" method="post">
                 <label for="email">Email:</label><br><br>
-                <input type="email" id="email" name="email"><br><br>
+                <input type="email" id="email" name="email" required><br><br>
                 <label for="password">Password:</label><br><br>
-                <input type="password" id="password" name="password"><br><br><br>
+                <input type="password" id="password" name="password" required><br><br><br>
                 <input type="submit" value="Submit">
             </form>
         </div>

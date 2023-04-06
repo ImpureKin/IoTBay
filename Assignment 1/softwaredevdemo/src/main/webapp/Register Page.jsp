@@ -1,6 +1,6 @@
 <%-- 
-    Document   : Login Page
-    Created on : 28 Mar 2023, 5:20:05 pm
+    Document   : Register Page
+    Created on : 28 Mar 2023, 5:20:19 pm
     Author     : John
 --%>
 
@@ -28,14 +28,14 @@
           height: 80px;
           margin: 0;
           position: absolute;
-          top: 50%;
+          top: 45%;
           left: 50%;
           -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
         }
         </style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>IoTBay Login</title>
+        <title>IoTBay Register</title>
     </head>
     <body>
         <div class="container">
@@ -43,14 +43,14 @@
                 <h1>Internet of Things Bay</h1><br><br><br><br><br>
             </div>
             <div class="titlecenter">
-                <h1>Login Page</h1>
+                <h1>Register Page</h1>
             </div>
             <div class="textcenter">
-                <form action="Welcome Page.jsp">
+                <form action="RegisterSuccess.jsp">
                     <label for="email">Email:</label><br><br>
-                    <input type="email" id="email" name="email"><br><br>
+                    <input type="email" id="email" name="email" required><br><br>
                     <label for="password">Password:</label><br><br>
-                    <input type="password" id="password" name="password"><br><br><br>
+                    <input type="password" id="password" name="password" required><br><br><br>
                     <input type="submit" value="Submit">
                 </form>
             </div>
