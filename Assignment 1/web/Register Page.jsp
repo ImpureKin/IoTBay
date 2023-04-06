@@ -51,7 +51,7 @@
                     <input type="email" id="email" name="email" required><br><br>
                     <label for="password">Password:</label><br><br>
                     <input type="password" id="password" name="password" required><br><br><br>
-                    <input type="submit" value="Submit">
+                    <input type="submit" id="submit" value="Submit">
                 </form>
             </div>
         </div>
