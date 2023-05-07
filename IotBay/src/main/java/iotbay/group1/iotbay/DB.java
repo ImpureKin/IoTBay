@@ -13,10 +13,11 @@ public class DB {
 
     Connection con = null;
        
-    public static Connection connectDB() {
+    public static Connection getConnection() {
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection con = DriverManager.getConnection("jdbc:sqlite:IotBay.db");
+            String dbUrl = DB.class.getClassLoader().getResource("IotBay.db").toString();
+            Connection con = DriverManager.getConnection("jdbc:sqlite:" + dbUrl.substring(5)); // Remove the "file:" prefix
             System.out.println("Connection Successful");
             return con;
         }
@@ -26,7 +27,27 @@ public class DB {
         }
     }
     
-    public static void create() {
+public boolean authenticateUser(Connection connection, String userType, String email, String password) {
+    try {
+        String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
+        String query = "SELECT * FROM " + tableName + " WHERE email = ? AND password = ?";
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        pstmt.setString(1, email);
+        pstmt.setString(2, password);
+        ResultSet rs = pstmt.executeQuery();
+        
+        if (rs.next()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (SQLException e) {
+        System.out.println("Authentication error: " + e);
+        return false;
+    }
+}
+    
+    public static void create(Connection connection) {
         String sql = "CREATE TABLE customer (\n" +
                     "  id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                     "  first_name TEXT NOT NULL,\n" +
@@ -40,7 +61,7 @@ public class DB {
                     "  credit_card_cvv TEXT DEFAULT NULL\n" +
                     ");";
         try {
-            Connection connection = connectDB();
+            //Connection connection = getConnection();
             PreparedStatement query = connection.prepareStatement(sql);
             query.executeUpdate();
             System.out.println("Created table.");
@@ -50,10 +71,10 @@ public class DB {
         }
     }
     
-    public static void insert() {
+    public static void insert(Connection connection) {
         String sql = "INSERT INTO `customer` (first_name, last_name, email, password, phone_number, address, credit_card_number, credit_card_expiry, credit_card_cvv) VALUES ('Madison','Walker','madison.walker@hotmail.com','pE8j#M5t','0423456789','17 Maple Road','4525567812345678','07/23','777');";
         try {
-            Connection connection = connectDB();
+            // Connection connection = getConnection();
             PreparedStatement query = connection.prepareStatement(sql);
             query.executeUpdate();
             System.out.println("Inserted to table.");
@@ -63,25 +84,21 @@ public class DB {
         }
     }
     
-    public static void select() {
+    public static void select(Connection connection) {
         String sql = "SELECT * FROM Customer;";
         try {
-            Connection connection = connectDB();
+            //Connection connection = getConnection();
             PreparedStatement query = connection.prepareStatement(sql);
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
-                System.out.println("Select Result: " + rs.getString("id"));
+                System.out.println("Select Result: " + rs.getString("email"));
             }
         }
         catch(Exception e) {
             System.out.println("Select from table failed: " + e);
         }
     }
-    
-    public static void main(String[] args) {
-//        connectDB();
-//        create();
-//        insert();
-        select();
+    public static void main(String args[]) {
+        select(getConnection());
     }
 }
