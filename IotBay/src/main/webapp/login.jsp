@@ -59,7 +59,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <div class="titlecenter">
             <h1>-- Login --</h1>
         </div>
-        <% String userType = request.getParameter("userType");
+        <% Object userType = session.getAttribute("userType");
         
         if (userType.equals("customer")) { %>
         <div class="textcenter">

@@ -12,7 +12,7 @@
     <body>
         <%
             // Retrieve the userType, email, and password from the request
-            String userType = request.getParameter("userType");
+            String userType = (String) session.getAttribute("userType");
             String email = request.getParameter("email");
             String password = request.getParameter("password");
 
@@ -20,14 +20,9 @@
             DB db = new DB();
             Connection conn = db.getConnection();
 
-            if (userType.equals("customer")) {
-                userType = "Customer";
-            } else {
-                userType = "Staff";
-            }
-
             // Check if the user credentials are valid
             boolean isAuthenticated = db.authenticateUser(conn, userType, email, password);
+            System.out.println(isAuthenticated);
 
             if (isAuthenticated) {
                 // Save user details in session
@@ -35,7 +30,7 @@
                 session.setAttribute("userType", userType);
 
                 // Redirect to the desired page
-                response.sendRedirect("welcome.jsp");
+                response.sendRedirect("login_successful.jsp");
             } else {
                 // Display error message
                 out.println("<h2>Invalid email or password. Please try again.</h2>");

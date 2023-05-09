@@ -18,17 +18,20 @@ public class DB {
             Class.forName("org.sqlite.JDBC");
             String dbUrl = DB.class.getClassLoader().getResource("IotBay.db").toString();
             Connection con = DriverManager.getConnection("jdbc:sqlite:" + dbUrl.substring(5)); // Remove the "file:" prefix
-            System.out.println("Connection Successful");
+            System.out.println("Connection to IotBay Database Successful");
             return con;
         }
         catch (Exception e) {
-            System.out.println("Connection Failed: " + e);
+            System.out.println("Connection to IotBay Database Failed: " + e);
             return null;
         }
     }
     
 public boolean authenticateUser(Connection connection, String userType, String email, String password) {
     try {
+        System.out.println(userType);
+        System.out.println(email);
+        System.out.println(password);
         String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
         String query = "SELECT * FROM " + tableName + " WHERE email = ? AND password = ?";
         PreparedStatement pstmt = connection.prepareStatement(query);
