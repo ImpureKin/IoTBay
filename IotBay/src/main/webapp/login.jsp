@@ -59,8 +59,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <div class="titlecenter">
             <h1>-- Login --</h1>
         </div>
-        <% Object userType = session.getAttribute("userType");
-        
+        <%         
+        String userType = request.getParameter("userType");
+        if (userType != null) {
+            session.setAttribute("userType", userType);
+        }
+ 
         if (userType.equals("customer")) { %>
         <div class="textcenter">
             <form action="login_check.jsp" method="post">

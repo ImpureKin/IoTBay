@@ -26,7 +26,13 @@
             // Retrieve the value (if any) of the form field called 'submitted'
 
             String submitted =  request.getParameter("submitted");
+
             String userType = request.getParameter("userType");
+            if (userType != null) {
+                session.setAttribute("userType", userType);
+            }
+
+
 
             // If the Java variable 'submitted' is not null AND 'submitted' equals "yes"
 

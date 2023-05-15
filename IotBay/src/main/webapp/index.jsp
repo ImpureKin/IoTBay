@@ -32,9 +32,9 @@
         <% } else { %>
         
         <p>Welcome to IotBay! To get started, please register or login if you have an existing account.</p>
-        <a <%session.setAttribute("userType", "Customer");%> href="login.jsp">Login</a> <a> / </a> <a <%session.setAttribute("userType", "Staff");%>href="login.jsp">Staff Login</a>
+        <a href="login.jsp?userType=Customer">Login</a> <a> / </a> <a href="login.jsp?userType=Staff">Staff Login</a>
         <br>
-        <a <%session.setAttribute("userType", "Customer");%> href="register.jsp">Register</a> <a> / </a> <a <%session.setAttribute("userType", "Staff");%> href="register.jsp?userType=staff">Staff Register</a>
+        <a href="register.jsp?userType=Customer">Register</a> <a> / </a> <a href="register.jsp?userType=Staff">Staff Register</a>
         <br>
         
         <% } %>

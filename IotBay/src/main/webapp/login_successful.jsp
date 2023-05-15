@@ -7,7 +7,7 @@
 	<meta charset="UTF-8">
 	<title>Welcome</title>
 </head>
-<body bgcolor="favcol" </body>
+<body
 	<h1>Login Successful</h1>
         <p> Login Successful! </p>
 </body>

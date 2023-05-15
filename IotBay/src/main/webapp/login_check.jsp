@@ -34,7 +34,7 @@
             } else {
                 // Display error message
                 out.println("<h2>Invalid email or password. Please try again.</h2>");
-                out.println("<a href='login.jsp'>Back to Login</a>");
+                out.println("<a href='login.jsp?userType=" + userType + "'>Back to Login</a>");
             }
 
             // Close the connection
