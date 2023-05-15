@@ -12,43 +12,42 @@ import java.sql.*;
 public class DB {
 
     Connection con = null;
-       
+    
     public static Connection getConnection() {
         try {
             Class.forName("org.sqlite.JDBC");
-            String dbUrl = DB.class.getClassLoader().getResource("IotBay.db").toString();
-            Connection con = DriverManager.getConnection("jdbc:sqlite:" + dbUrl.substring(5)); // Remove the "file:" prefix
-            System.out.println("Connection to IotBay Database Successful");
+            Connection con = DriverManager.getConnection("jdbc:sqlite:IotBay.db");
+            System.out.println("Connection Successful");
             return con;
         }
         catch (Exception e) {
-            System.out.println("Connection to IotBay Database Failed: " + e);
+            System.out.println("Connection Failed: " + e);
             return null;
         }
     }
-    
-public boolean authenticateUser(Connection connection, String userType, String email, String password) {
-    try {
-        System.out.println(userType);
-        System.out.println(email);
-        System.out.println(password);
-        String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
-        String query = "SELECT * FROM " + tableName + " WHERE email = ? AND password = ?";
-        PreparedStatement pstmt = connection.prepareStatement(query);
-        pstmt.setString(1, email);
-        pstmt.setString(2, password);
-        ResultSet rs = pstmt.executeQuery();
-        
-        if (rs.next()) {
-            return true;
-        } else {
+
+    public boolean authenticateUser(Connection connection, String userType, String email, String password) {
+        try {
+            System.out.println(userType);
+            System.out.println(email);
+            System.out.println(password);
+            String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
+            String query = "SELECT * FROM " + tableName + " WHERE email = ? AND password = ?";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, email);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Authentication error: " + e);
             return false;
         }
-    } catch (SQLException e) {
-        System.out.println("Authentication error: " + e);
-        return false;
     }
-}
     
     public static void create(Connection connection) {
         String sql = "CREATE TABLE customer (\n" +
