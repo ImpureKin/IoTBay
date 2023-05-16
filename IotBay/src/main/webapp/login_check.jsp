@@ -1,6 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
-<%@ page import="iotbay.group1.iotbay.UserManager" %>
 <%@ page import="iotbay.group1.iotbay.DB" %>
 
 <!DOCTYPE html>
@@ -26,6 +25,7 @@
 
             if (isAuthenticated) {
                 // Save user details in session
+                // TO DO: Get ID and store into Session
                 session.setAttribute("email", email);
                 session.setAttribute("userType", userType);
 

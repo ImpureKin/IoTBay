@@ -16,7 +16,7 @@ public class DB {
     public static Connection getConnection() {
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection con = DriverManager.getConnection("jdbc:sqlite:IotBay.db");
+            Connection con = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\eren_\\Documents\\NetBeansProjects\\IoTBay-clone\\IotBay\\IotBay.db");
             System.out.println("Connection Successful");
             return con;
         }

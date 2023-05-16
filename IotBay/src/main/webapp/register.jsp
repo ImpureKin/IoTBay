@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="iotbay.group1.iotbay.User" %>
+<%@ page import="iotbay.group1.iotbay.DB" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,34 +32,16 @@
             if (userType != null) {
                 session.setAttribute("userType", userType);
             }
-
-
-
+            
             // If the Java variable 'submitted' is not null AND 'submitted' equals "yes"
-
             if (submitted != null && submitted.equals("yes")) {
                 String tos = request.getParameter("tos");
                 if (tos != null && tos.equals("true")) {
-                    User user = new User(
-                    request.getParameter("firstName"),
-                    request.getParameter("lastName"),
-                    request.getParameter("email"),
-                    request.getParameter("password"),
-                    request.getParameter("phoneNumber")
-                    );
-                    session.setAttribute("User", user);
-                %>
-                
-            <body>
-                <h1>Registration Successful.</h1>
-                <p>Welcome, <%= user.getFullName() %>!</p>
-                <p>Your email is: <%= user.getEmail() %></p>
-                <p>Your password is: <%= user.getPassword() %></p>
-                <p>Your phone number is: <%= user.getPhoneNumber() %></p>
-                <p>Click <a href="index.jsp">here</a> to proceed to the login page</p>
-            </body>     
-            
-            <%
+                    // Insert into DB
+                    
+                    // Redirect to register_successful.jsp
+                    response.sendRedirect("register_successful.jsp");
+
                 } else {
             %>
                 <p>You must agree to the TOS to register. Please <a href="registration.jsp">go back</a> and agree to the TOS.</p>

@@ -1,13 +1,15 @@
 package iotbay.group1.iotbay;
 
 public class User {
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
     private String phoneNumber;
-
-    public User(String firstName, String lastName, String email, String password, String phoneNumber) {
+    
+    public User(String id, String firstName, String lastName, String email, String password, String phoneNumber) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -16,6 +18,14 @@ public class User {
     }
 
     // Getters and Setters
+    public String getID() {
+        return firstName;
+    }
+
+    public void setID(String id) {
+        this.id = id;
+    }
+    
     public String getFirstName() {
         return firstName;
     }
