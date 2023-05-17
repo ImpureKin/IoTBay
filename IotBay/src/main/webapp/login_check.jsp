@@ -1,6 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
-<%@ page import="iotbay.group1.iotbay.DB" %>
+<%@ page import="iotbay.group1.iotbay.*" %>
 
 <!DOCTYPE html>
 <html>
@@ -25,9 +25,9 @@
 
             if (isAuthenticated) {
                 // Save user details in session
-                // TO DO: Get ID and store into Session
-                session.setAttribute("email", email);
-                session.setAttribute("userType", userType);
+                User user = db.getUser(conn, userType, email);
+                session.setAttribute("User", user);
+                session.setAttribute("log_id", db.logUserLogin(conn, userType, user.getID()));
 
                 // Redirect to the desired page
                 response.sendRedirect("login_successful.jsp");
@@ -42,8 +42,3 @@
         %>
     </body>
 </html>
-
-<!--
-emma.johnson@gmail.com
-FJd6wHx#
--->

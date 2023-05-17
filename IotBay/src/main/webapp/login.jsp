@@ -64,6 +64,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             if (userType != null) {
                 session.setAttribute("userType", userType);
             }
+            else {
+                userType = (String) session.getAttribute("userType");
+            }
         
         if (userType.equals("customer")) { %>
         <div class="textcenter">

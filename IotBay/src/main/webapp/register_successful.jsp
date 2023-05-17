@@ -12,6 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>You have successfully registered!</h1>
+        <p>Please click <a href="login.jsp">here</a> to login!<p>
     </body>
 </html>

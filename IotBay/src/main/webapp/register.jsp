@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="iotbay.group1.iotbay.User" %>
+<%@ page import="java.sql.*" %>
 <%@ page import="iotbay.group1.iotbay.DB" %>
 <!DOCTYPE html>
 <html>
@@ -27,20 +28,65 @@
             // Retrieve the value (if any) of the form field called 'submitted'
 
             String submitted =  request.getParameter("submitted");
-
             String userType = request.getParameter("userType");
+            
             if (userType != null) {
                 session.setAttribute("userType", userType);
+            } 
+            else {
+                userType = (String) session.getAttribute("userType");
             }
             
-            // If the Java variable 'submitted' is not null AND 'submitted' equals "yes"
             if (submitted != null && submitted.equals("yes")) {
                 String tos = request.getParameter("tos");
                 if (tos != null && tos.equals("true")) {
-                    // Insert into DB
+                
+                    // Insert into DB (conn, userType, fname, lname, email, pass, phone, address)
+                    DB db = new DB();
+                    Connection conn = db.getConnection();
                     
-                    // Redirect to register_successful.jsp
-                    response.sendRedirect("register_successful.jsp");
+                    String registerResult;
+                    String firstName = request.getParameter("firstName");
+                    String lastName = request.getParameter("lastName");
+                    String email = request.getParameter("email");
+                    String password = request.getParameter("password");
+                    String phoneNumber = request.getParameter("phoneNumber");
+                    String address = request.getParameter("address");
+                    
+                    if (userType.equalsIgnoreCase("staff")) {
+                        String role = request.getParameter("role");
+                        registerResult = db.registerStaff(conn, firstName, lastName, email, password, role, phoneNumber, address);
+                    }
+                    else {
+                        registerResult = db.registerCustomer(conn, firstName, lastName, email, password, phoneNumber, address);
+                    }
+                    
+                    
+                    if (registerResult.equals("Success")) {
+                        // Redirect to register_successful.jsp
+                        response.sendRedirect("register_successful.jsp");
+                    }
+                    else if (registerResult.contains("UNIQUE constraint failed:") && registerResult.contains(".email")){
+                        // Email already registered. Give error message.
+                        out.println("<h2>This email is already registered.</h2>");
+                        out.println("<a href='register.jsp?userType=" + userType + "'>Back to register page.</a>");
+                        out.println("<br>");
+                        out.println("<a href='login.jsp?userType=" + userType + "'>Login with existing account.</a>");
+                    }
+                    else if (registerResult.contains("UNIQUE constraint failed:") && registerResult.contains(".phone_number")){
+                        // Phone already registered. Give error message.
+                        out.println("<h2>This phone number is already registered.</h2>");
+                        out.println("<a href='register.jsp?userType=" + userType + "'>Back to register page.</a>");
+                        out.println("<br>");
+                        out.println("<a href='login.jsp?userType=" + userType + "'>Login with existing account.</a>");
+                    }
+                    else {
+                        // Error occurred. Give error message.
+                        out.println("<h2>Registration failed. Please try again.</h2>");
+                        out.println("<a href='register.jsp?userType=" + userType + "'>Back to register page.</a>");
+                    }
+                    
+
 
                 } else {
             %>
@@ -62,7 +108,7 @@
             
             
             <%    } else { 
-                        if (userType.equals("customer")) { %>
+                        if (userType.equals("Customer")) { %>
             <body>
             <h1>Customer Registration Form</h1>
             <form action="register.jsp" method="POST">
@@ -72,11 +118,11 @@
                                 <td><input type="email" name="email" required></td>
                         </tr>
                         <tr>
-                                <td><label for="name">First Name:</label></td>
+                                <td><label for="firstName">First Name:</label></td>
                                 <td><input type="text" name="firstName" required></td>
                         </tr>
                         <tr>
-                                <td><label for="name">Last Name:</label></td>
+                                <td><label for="lastName">Last Name:</label></td>
                                 <td><input type="text" name="lastName" required></td>
                         </tr>
                         <tr>
@@ -84,8 +130,12 @@
                                 <td><input type="password" name="password" required></td>
                         </tr>
                         <tr>
-                                <td><label for="password">Phone Number:</label></td>
+                                <td><label for="phoneNumber">Phone Number:</label></td>
                                 <td><input type="text" name="phoneNumber" required></td>
+                        </tr>
+                        <tr>
+                                <td><label for="address">Address:</label></td>
+                                <td><input type="text" name="address" required></td>
                         </tr>
                         <tr>
                                 <td><label for="tos">I agree to the Terms of Service:</label></td>
@@ -96,7 +146,7 @@
                     <input type="submit" value="Register">
                     <input type="button" value="Cancel" onclick="window.location.href='index.jsp';">
                     <input type="hidden" name="submitted" value="yes">
-                    <input type="hidden" name="userType" value="customer">
+                    <input type="hidden" name="userType" value="Customer">
             </form>
             </body>
             
@@ -136,6 +186,14 @@
                         <tr>
                                 <td><label for="phoneNumber">Phone Number:</label></td>
                                 <td><input type="text" name="phoneNumber" required></td>
+                        </tr>
+                        <tr>
+                                <td><label for="address">Address:</label></td>
+                                <td><input type="text" name="address" required></td>
+                        </tr>
+                        <tr>
+                                <td><label for="role">Role:</label></td>
+                                <td><input type="text" name="role" required></td>
                         </tr>
                         <tr>
                                 <td><label for="staffCode">Staff Code:</label></td>

@@ -1,28 +1,44 @@
 package iotbay.group1.iotbay;
 
 public class User {
-    private String id;
+    private int id;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+    private String role; // For staff only
     private String phoneNumber;
+    private String address;
     
-    public User(String id, String firstName, String lastName, String email, String password, String phoneNumber) {
+    // Customer
+    public User(int id, String firstName, String lastName, String email, String password, String phoneNumber, String address) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.address = address;
+    }
+    
+    // Staff
+    public User(int id, String firstName, String lastName, String email, String password, String role, String phoneNumber, String address) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
     }
 
     // Getters and Setters
-    public String getID() {
-        return firstName;
+    public int getID() {
+        return id;
     }
 
-    public void setID(String id) {
+    public void setID(int id) {
         this.id = id;
     }
     

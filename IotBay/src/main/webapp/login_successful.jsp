@@ -9,6 +9,7 @@
 </head>
 <body
 	<h1>Login Successful</h1>
-        <p> Login Successful! </p>
+        <br>
+        <a href="logout.jsp">Logout</a>
 </body>
 </html>

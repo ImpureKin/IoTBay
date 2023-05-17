@@ -16,7 +16,12 @@ public class DB {
     public static Connection getConnection() {
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection con = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\eren_\\Documents\\NetBeansProjects\\IoTBay-clone\\IotBay\\IotBay.db");
+            // LAPTOP CONNECTION
+            // Connection con = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\eren_\\Documents\\NetBeansProjects\\IoTBay-clone\\IotBay\\IotBay.db");
+            
+            // PC CONNECTION
+            Connection con = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Big Pops\\Documents\\NetBeansProjects\\IotBay\\IotBay\\IotBay.db");
+            
             System.out.println("Connection Successful");
             return con;
         }
@@ -26,11 +31,9 @@ public class DB {
         }
     }
 
+    // Authenticate a user during login
     public boolean authenticateUser(Connection connection, String userType, String email, String password) {
         try {
-            System.out.println(userType);
-            System.out.println(email);
-            System.out.println(password);
             String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
             String query = "SELECT * FROM " + tableName + " WHERE email = ? AND password = ?";
             PreparedStatement pstmt = connection.prepareStatement(query);
@@ -38,41 +41,123 @@ public class DB {
             pstmt.setString(2, password);
             ResultSet rs = pstmt.executeQuery();
 
-            if (rs.next()) {
-                return true;
-            } else {
-                return false;
-            }
+            return (rs.next());
+            
         } catch (SQLException e) {
             System.out.println("Authentication error: " + e);
             return false;
         }
     }
     
-    public static void create(Connection connection) {
-        String sql = "CREATE TABLE customer (\n" +
-                    "  id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                    "  first_name TEXT NOT NULL,\n" +
-                    "  last_name TEXT NOT NULL,\n" +
-                    "  email TEXT NOT NULL UNIQUE,\n" +
-                    "  password TEXT NOT NULL,\n" +
-                    "  phone_number TEXT NOT NULL UNIQUE,\n" +
-                    "  address TEXT NOT NULL,\n" +
-                    "  credit_card_number TEXT DEFAULT NULL,\n" +
-                    "  credit_card_expiry TEXT DEFAULT NULL,\n" +
-                    "  credit_card_cvv TEXT DEFAULT NULL\n" +
-                    ");";
+    // Get User to store in Session
+    public User getUser(Connection connection, String userType, String email) {
         try {
-            //Connection connection = getConnection();
-            PreparedStatement query = connection.prepareStatement(sql);
-            query.executeUpdate();
-            System.out.println("Created table.");
-        }
-        catch(Exception e) {
-            System.out.println("Create table failed: " + e);
+            String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
+            String query = "SELECT * FROM " + tableName + " WHERE email = ?";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            
+            int id = rs.getInt("id");
+            String firstName = rs.getString("first_name");
+            String lastName = rs.getString("last_name");
+            String password = rs.getString("password");
+            String phoneNumber = rs.getString("phone_number");
+            String address = rs.getString("address");
+            
+            if (userType.equalsIgnoreCase("staff")) {
+                String role = rs.getString("role");
+                User user = new User(id, firstName, lastName, email, password, role, phoneNumber, address);
+                return user;
+            }
+            else {
+                User user = new User(id, firstName, lastName, email, password, phoneNumber, address);
+                return user;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting User: " + e);
+            return null;
         }
     }
     
+    // Insert a registered customer into DB
+    public String registerCustomer(Connection connection, String firstName, String lastName, String email, String password, String phoneNumber, String address) {
+        try {
+            String query = "INSERT INTO " + "Customer" + "(first_name, last_name, email, password, phone_number, address) VALUES (?, ?, ?, ?, ?, ?);";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, email);
+            pstmt.setString(4, password);
+            pstmt.setString(5, phoneNumber);
+            pstmt.setString(6, address);
+            pstmt.executeUpdate();
+            System.out.println("Successfully registered customer: " + firstName + " " + lastName);
+            return "Success";
+        } catch (SQLException e) {
+            System.out.println("Customer Registration error: " + e);
+            return "Failed. " + e;
+        }
+    }
+    
+    // Insert a registered customer into DB
+    public String registerStaff(Connection connection, String firstName, String lastName, String email, String password, String role, String phoneNumber, String address) {
+        try {
+            String query = "INSERT INTO " + "Staff" + "(first_name, last_name, email, password, role, phone_number, address) VALUES (?, ?, ?, ?, ?, ?, ?);";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, email);
+            pstmt.setString(4, password);
+            pstmt.setString(5, role);
+            pstmt.setString(6, phoneNumber);
+            pstmt.setString(7, address);
+            pstmt.executeUpdate();
+            System.out.println("Successfully registered staff: " + firstName + " " + lastName);
+            return "Success";
+        } catch (SQLException e) {
+            System.out.println("Staff Registration error: " + e);
+            return "Failed. " + e;
+        }
+    }
+    
+    public static int logUserLogin(Connection connection, String userType, int userID) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
+        String query = "INSERT INTO " + tableName + "(" + userType + "_id, login_timestamp) VALUES (?, CURRENT_TIMESTAMP);";
+        int loginID = -1;
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setInt(1, userID);
+            pstmt.executeUpdate();
+            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+            
+            if (generatedKeys.next()) {
+                loginID = generatedKeys.getInt(1);
+            }
+            
+            System.out.println("Logged user login.");
+        }
+        catch(Exception e) {
+            System.out.println("Error trying to log user login: " + e);
+        }
+        return loginID;
+    }
+    
+    public static void logUserLogout(Connection connection, String userType, int logID) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
+        String query = "UPDATE " + tableName + " SET logout_timestamp = CURRENT_TIMESTAMP WHERE id = ?;";
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setInt(1, logID);
+            pstmt.executeUpdate();
+            System.out.println("Logged user logout.");
+        }
+        catch(Exception e) {
+            System.out.println("Error trying to log user logout: " + e);
+        }
+    }
+    
+    // Example function.
     public static void insert(Connection connection) {
         String sql = "INSERT INTO `customer` (first_name, last_name, email, password, phone_number, address, credit_card_number, credit_card_expiry, credit_card_cvv) VALUES ('Madison','Walker','madison.walker@hotmail.com','pE8j#M5t','0423456789','17 Maple Road','4525567812345678','07/23','777');";
         try {
@@ -86,14 +171,15 @@ public class DB {
         }
     }
     
+    // Example function.
     public static void select(Connection connection) {
-        String sql = "SELECT * FROM Customer;";
+        String sql = "SELECT * FROM Staff_Log;";
         try {
             //Connection connection = getConnection();
             PreparedStatement query = connection.prepareStatement(sql);
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
-                System.out.println("Select Result: " + rs.getString("email"));
+                System.out.println("Select Result: " + rs.getString("login_timestamp"));
             }
         }
         catch(Exception e) {
