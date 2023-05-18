@@ -16,7 +16,7 @@ public class DB {
     public static Connection connectDB() {
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection con = DriverManager.getConnection("jdbc:sqlite:IotBay.db");
+            Connection con = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\kingt\\Documents\\GitHub\\IoTBay\\IotBay\\IotBay.db");
             System.out.println("Connection Successful");
             return con;
         }
@@ -71,6 +71,7 @@ public class DB {
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
                 System.out.println("Select Result: " + rs.getString("id"));
+                System.out.println("Select Result: " + rs.getString("email"));
             }
         }
         catch(Exception e) {
@@ -82,6 +83,40 @@ public class DB {
 //        connectDB();
 //        create();
 //        insert();
-        select();
+//        select();
+viewInvoices(10);
+    }
+
+    public static void addPay(String[] args)
+    {
+        String sql = "INSERT INTO `invoice` (date, amount, payment_method, status, customer_id, order_id) VALUES ('2023-05-15','2000','cash','pending','1','1');";
+        try {
+            Connection connection = connectDB();
+            PreparedStatement query = connection.prepareStatement(sql);
+            query.executeUpdate();
+            System.out.println("Inserted to table.");
+        }
+        catch(Exception e) {
+            System.out.println("Insert to table failed: " + e);
+        }
+
+    }
+
+    public static void viewInvoices(int a)
+    {
+        String sql = "SELECT * FROM Invoice WHERE customer_id = ?;";
+        try {
+            Connection connection = connectDB();
+            PreparedStatement query = connection.prepareStatement(sql);
+            query.setInt(1,a);
+            ResultSet rs = query.executeQuery();
+            while (rs.next()) {
+                System.out.println("Select Result: " + rs.getString("id"));
+                System.out.println("Select Result: " + rs.getString("amount"));
+            }
+        }
+        catch(Exception e) {
+            System.out.println("Select from table failed: " + e);
+        }
     }
 }
