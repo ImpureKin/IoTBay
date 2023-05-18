@@ -30,7 +30,7 @@
                 session.setAttribute("log_id", db.logUserLogin(conn, userType, user.getID()));
 
                 // Redirect to the desired page
-                response.sendRedirect("login_successful.jsp");
+                response.sendRedirect("home.jsp");
             } else {
                 // Display error message
                 out.println("<h2>Invalid email or password. Please try again.</h2>");

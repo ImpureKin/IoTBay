@@ -55,11 +55,12 @@
                     
                     if (userType.equalsIgnoreCase("staff")) {
                         String role = request.getParameter("role");
-                        registerResult = db.registerStaff(conn, firstName, lastName, email, password, role, phoneNumber, address);
+                        registerResult = db.registerStaff(conn, firstName, lastName, email, password, role, phoneNumber, address, userType);
                     }
                     else {
-                        registerResult = db.registerCustomer(conn, firstName, lastName, email, password, phoneNumber, address);
+                        registerResult = db.registerCustomer(conn, firstName, lastName, email, password, phoneNumber, address, userType);
                     }
+                    conn.close();
                     
                     
                     if (registerResult.equals("Success")) {

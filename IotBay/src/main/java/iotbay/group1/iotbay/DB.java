@@ -35,10 +35,8 @@ public class DB {
     public boolean authenticateUser(Connection connection, String userType, String email, String password) {
         try {
             String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
-            String query = "SELECT * FROM " + tableName + " WHERE email = ? AND password = ?";
+            String query = "SELECT * FROM " + tableName + " WHERE email = '" + email + "' AND password = '" + password + "'";
             PreparedStatement pstmt = connection.prepareStatement(query);
-            pstmt.setString(1, email);
-            pstmt.setString(2, password);
             ResultSet rs = pstmt.executeQuery();
 
             return (rs.next());
@@ -53,9 +51,8 @@ public class DB {
     public User getUser(Connection connection, String userType, String email) {
         try {
             String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
-            String query = "SELECT * FROM " + tableName + " WHERE email = ?";
+            String query = "SELECT * FROM " + tableName + " WHERE email = '" + email + "'";
             PreparedStatement pstmt = connection.prepareStatement(query);
-            pstmt.setString(1, email);
             ResultSet rs = pstmt.executeQuery();
             
             int id = rs.getInt("id");
@@ -67,11 +64,11 @@ public class DB {
             
             if (userType.equalsIgnoreCase("staff")) {
                 String role = rs.getString("role");
-                User user = new User(id, firstName, lastName, email, password, role, phoneNumber, address);
+                User user = new User(id, firstName, lastName, email, password, role, phoneNumber, address, userType);
                 return user;
             }
             else {
-                User user = new User(id, firstName, lastName, email, password, phoneNumber, address);
+                User user = new User(id, firstName, lastName, email, password, phoneNumber, address, userType);
                 return user;
             }
         } catch (SQLException e) {
@@ -81,7 +78,7 @@ public class DB {
     }
     
     // Insert a registered customer into DB
-    public String registerCustomer(Connection connection, String firstName, String lastName, String email, String password, String phoneNumber, String address) {
+    public String registerCustomer(Connection connection, String firstName, String lastName, String email, String password, String phoneNumber, String address, String userType) {
         try {
             String query = "INSERT INTO " + "Customer" + "(first_name, last_name, email, password, phone_number, address) VALUES (?, ?, ?, ?, ?, ?);";
             PreparedStatement pstmt = connection.prepareStatement(query);
@@ -101,7 +98,7 @@ public class DB {
     }
     
     // Insert a registered customer into DB
-    public String registerStaff(Connection connection, String firstName, String lastName, String email, String password, String role, String phoneNumber, String address) {
+    public String registerStaff(Connection connection, String firstName, String lastName, String email, String password, String role, String phoneNumber, String address, String userType) {
         try {
             String query = "INSERT INTO " + "Staff" + "(first_name, last_name, email, password, role, phone_number, address) VALUES (?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement pstmt = connection.prepareStatement(query);
@@ -123,11 +120,10 @@ public class DB {
     
     public static int logUserLogin(Connection connection, String userType, int userID) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
-        String query = "INSERT INTO " + tableName + "(" + userType + "_id, login_timestamp) VALUES (?, CURRENT_TIMESTAMP);";
+        String query = "INSERT INTO " + tableName + "(" + userType + "_id, login_timestamp) VALUES (" + userID + ", CURRENT_TIMESTAMP);";
         int loginID = -1;
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
-            pstmt.setInt(1, userID);
             pstmt.executeUpdate();
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
             
@@ -145,15 +141,49 @@ public class DB {
     
     public static void logUserLogout(Connection connection, String userType, int logID) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
-        String query = "UPDATE " + tableName + " SET logout_timestamp = CURRENT_TIMESTAMP WHERE id = ?;";
+        String query = "UPDATE " + tableName + " SET logout_timestamp = CURRENT_TIMESTAMP WHERE id = " + logID;
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
-            pstmt.setInt(1, logID);
             pstmt.executeUpdate();
             System.out.println("Logged user logout.");
         }
         catch(Exception e) {
             System.out.println("Error trying to log user logout: " + e);
+        }
+    }
+    
+    // Update user detail.
+    public static void updateUserDetail(Connection connection, String userType, String field, String value, int userID) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff");
+        String query = "UPDATE " + tableName + " SET " + field + " = '" + value + "' WHERE id = " + userID;
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.executeUpdate();
+            System.out.println("Updated user details - " + field + ".");
+        }
+        catch(Exception e) {
+            System.out.println("Error updating user details: " + e);
+        }
+    }
+    
+    // Delete user account.
+    public static void deleteAccount(Connection connection, String userType, int userID) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff");
+        String deleteAccountQuery = "DELETE FROM " + tableName + " WHERE id = " + userID;
+        String deleteOrdersQuery = "UPDATE 'order' SET status = 'Cancelled' WHERE customer_id = " + userID;
+        System.out.println(deleteAccountQuery);
+        System.out.println(deleteOrdersQuery);
+        try {
+            // Delete user account.
+            PreparedStatement pstmt = connection.prepareStatement(deleteAccountQuery);
+            pstmt.executeUpdate();
+            // Cancel orders related to customer.
+            pstmt = connection.prepareStatement(deleteOrdersQuery);
+            pstmt.executeUpdate();
+            System.out.println("Deleted user account and cancelled orders.");
+        }
+        catch(Exception e) {
+            System.out.println("Error deleting user account and/or cancelling orders: " + e);
         }
     }
     
