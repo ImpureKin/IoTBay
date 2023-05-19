@@ -224,7 +224,7 @@ viewInvoices(10);
     {
         String sql = "INSERT INTO `invoice` (date, amount, payment_method, status, customer_id, order_id) VALUES ('2023-05-15','2000','cash','pending','1','1');";
         try {
-            Connection connection = connectDB();
+            Connection connection = getConnection();
             PreparedStatement query = connection.prepareStatement(sql);
             query.executeUpdate();
             System.out.println("Inserted to table.");
@@ -239,7 +239,7 @@ viewInvoices(10);
     {
         String sql = "SELECT * FROM Invoice WHERE customer_id = ?;";
         try {
-            Connection connection = connectDB();
+            Connection connection = getConnection();
             PreparedStatement query = connection.prepareStatement(sql);
             query.setInt(1,a);
             ResultSet rs = query.executeQuery();

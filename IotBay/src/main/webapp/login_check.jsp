@@ -27,10 +27,10 @@
                 // Save user details in session
                 User user = db.getUser(conn, userType, email);
                 session.setAttribute("User", user);
-                session.setAttribute("log_id", db.logUserLogin(conn, userType, user.getID()));
+                //session.setAttribute("log_id", db.logUserLogin(conn, userType, user.getID()));
 
                 // Redirect to the desired page
-                response.sendRedirect("home.jsp");
+                response.sendRedirect("invoiceList.jsp");
             } else {
                 // Display error message
                 out.println("<h2>Invalid email or password. Please try again.</h2>");
