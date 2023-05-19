@@ -12,8 +12,8 @@ import java.sql.*;
 public class DB {
 
     Connection con = null;
-       
-    public static Connection connectDB() {
+    
+    public static Connection getConnection() {
         try {
             Class.forName("org.sqlite.JDBC");
             Connection con = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\kingt\\Documents\\GitHub\\IoTBay\\IotBay\\IotBay.db");
@@ -25,35 +25,168 @@ public class DB {
             return null;
         }
     }
-    
-    public static void create() {
-        String sql = "CREATE TABLE customer (\n" +
-                    "  id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                    "  first_name TEXT NOT NULL,\n" +
-                    "  last_name TEXT NOT NULL,\n" +
-                    "  email TEXT NOT NULL UNIQUE,\n" +
-                    "  password TEXT NOT NULL,\n" +
-                    "  phone_number TEXT NOT NULL UNIQUE,\n" +
-                    "  address TEXT NOT NULL,\n" +
-                    "  credit_card_number TEXT DEFAULT NULL,\n" +
-                    "  credit_card_expiry TEXT DEFAULT NULL,\n" +
-                    "  credit_card_cvv TEXT DEFAULT NULL\n" +
-                    ");";
+
+    // Authenticate a user during login
+    public boolean authenticateUser(Connection connection, String userType, String email, String password) {
         try {
-            Connection connection = connectDB();
-            PreparedStatement query = connection.prepareStatement(sql);
-            query.executeUpdate();
-            System.out.println("Created table.");
-        }
-        catch(Exception e) {
-            System.out.println("Create table failed: " + e);
+            String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
+            String query = "SELECT * FROM " + tableName + " WHERE email = '" + email + "' AND password = '" + password + "'";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+
+            return (rs.next());
+            
+        } catch (SQLException e) {
+            System.out.println("Authentication error: " + e);
+            return false;
         }
     }
     
-    public static void insert() {
+    // Get User to store in Session
+    public User getUser(Connection connection, String userType, String email) {
+        try {
+            String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
+            String query = "SELECT * FROM " + tableName + " WHERE email = '" + email + "'";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            
+            int id = rs.getInt("id");
+            String firstName = rs.getString("first_name");
+            String lastName = rs.getString("last_name");
+            String password = rs.getString("password");
+            String phoneNumber = rs.getString("phone_number");
+            String address = rs.getString("address");
+            
+            if (userType.equalsIgnoreCase("staff")) {
+                String role = rs.getString("role");
+                User user = new User(id, firstName, lastName, email, password, role, phoneNumber, address, userType);
+                return user;
+            }
+            else {
+                User user = new User(id, firstName, lastName, email, password, phoneNumber, address, userType);
+                return user;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting User: " + e);
+            return null;
+        }
+    }
+    
+    // Insert a registered customer into DB
+    public String registerCustomer(Connection connection, String firstName, String lastName, String email, String password, String phoneNumber, String address, String userType) {
+        try {
+            String query = "INSERT INTO " + "Customer" + "(first_name, last_name, email, password, phone_number, address) VALUES (?, ?, ?, ?, ?, ?);";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, email);
+            pstmt.setString(4, password);
+            pstmt.setString(5, phoneNumber);
+            pstmt.setString(6, address);
+            pstmt.executeUpdate();
+            System.out.println("Successfully registered customer: " + firstName + " " + lastName);
+            return "Success";
+        } catch (SQLException e) {
+            System.out.println("Customer Registration error: " + e);
+            return "Failed. " + e;
+        }
+    }
+    
+    // Insert a registered customer into DB
+    public String registerStaff(Connection connection, String firstName, String lastName, String email, String password, String role, String phoneNumber, String address, String userType) {
+        try {
+            String query = "INSERT INTO " + "Staff" + "(first_name, last_name, email, password, role, phone_number, address) VALUES (?, ?, ?, ?, ?, ?, ?);";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, email);
+            pstmt.setString(4, password);
+            pstmt.setString(5, role);
+            pstmt.setString(6, phoneNumber);
+            pstmt.setString(7, address);
+            pstmt.executeUpdate();
+            System.out.println("Successfully registered staff: " + firstName + " " + lastName);
+            return "Success";
+        } catch (SQLException e) {
+            System.out.println("Staff Registration error: " + e);
+            return "Failed. " + e;
+        }
+    }
+    
+    public static int logUserLogin(Connection connection, String userType, int userID) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
+        String query = "INSERT INTO " + tableName + "(" + userType + "_id, login_timestamp) VALUES (" + userID + ", CURRENT_TIMESTAMP);";
+        int loginID = -1;
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.executeUpdate();
+            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+            
+            if (generatedKeys.next()) {
+                loginID = generatedKeys.getInt(1);
+            }
+            
+            System.out.println("Logged user login.");
+        }
+        catch(Exception e) {
+            System.out.println("Error trying to log user login: " + e);
+        }
+        return loginID;
+    }
+    
+    public static void logUserLogout(Connection connection, String userType, int logID) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
+        String query = "UPDATE " + tableName + " SET logout_timestamp = CURRENT_TIMESTAMP WHERE id = " + logID;
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.executeUpdate();
+            System.out.println("Logged user logout.");
+        }
+        catch(Exception e) {
+            System.out.println("Error trying to log user logout: " + e);
+        }
+    }
+    
+    // Update user detail.
+    public static void updateUserDetail(Connection connection, String userType, String field, String value, int userID) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff");
+        String query = "UPDATE " + tableName + " SET " + field + " = '" + value + "' WHERE id = " + userID;
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.executeUpdate();
+            System.out.println("Updated user details - " + field + ".");
+        }
+        catch(Exception e) {
+            System.out.println("Error updating user details: " + e);
+        }
+    }
+    
+    // Delete user account.
+    public static void deleteAccount(Connection connection, String userType, int userID) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff");
+        String deleteAccountQuery = "DELETE FROM " + tableName + " WHERE id = " + userID;
+        String deleteOrdersQuery = "UPDATE 'order' SET status = 'Cancelled' WHERE customer_id = " + userID;
+        System.out.println(deleteAccountQuery);
+        System.out.println(deleteOrdersQuery);
+        try {
+            // Delete user account.
+            PreparedStatement pstmt = connection.prepareStatement(deleteAccountQuery);
+            pstmt.executeUpdate();
+            // Cancel orders related to customer.
+            pstmt = connection.prepareStatement(deleteOrdersQuery);
+            pstmt.executeUpdate();
+            System.out.println("Deleted user account and cancelled orders.");
+        }
+        catch(Exception e) {
+            System.out.println("Error deleting user account and/or cancelling orders: " + e);
+        }
+    }
+    
+    // Example function.
+    public static void insert(Connection connection) {
         String sql = "INSERT INTO `customer` (first_name, last_name, email, password, phone_number, address, credit_card_number, credit_card_expiry, credit_card_cvv) VALUES ('Madison','Walker','madison.walker@hotmail.com','pE8j#M5t','0423456789','17 Maple Road','4525567812345678','07/23','777');";
         try {
-            Connection connection = connectDB();
+            // Connection connection = getConnection();
             PreparedStatement query = connection.prepareStatement(sql);
             query.executeUpdate();
             System.out.println("Inserted to table.");
@@ -63,15 +196,15 @@ public class DB {
         }
     }
     
-    public static void select() {
-        String sql = "SELECT * FROM Customer;";
+    // Example function.
+    public static void select(Connection connection) {
+        String sql = "SELECT * FROM Staff_Log;";
         try {
-            Connection connection = connectDB();
+            //Connection connection = getConnection();
             PreparedStatement query = connection.prepareStatement(sql);
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
-                System.out.println("Select Result: " + rs.getString("id"));
-                System.out.println("Select Result: " + rs.getString("email"));
+                System.out.println("Select Result: " + rs.getString("login_timestamp"));
             }
         }
         catch(Exception e) {
