@@ -57,7 +57,7 @@
         <%} else{%>
         <h1>No Invoices Found</h1>
         <%};} else{%>
-        <p>You must be logged in to view this page</p>
-        <button>Cheat Button</button><% };%>
+        <p>You must be <a href=login.jsp?userType=Customer>logged in</a> to view this page</p>
+        <% };%>
     </body>
 </html>
