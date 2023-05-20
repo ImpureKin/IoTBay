@@ -4,6 +4,8 @@
 
 package iotbay.group1.iotbay;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -185,6 +187,56 @@ public class DB {
         catch(Exception e) {
             System.out.println("Error deleting user account and/or cancelling orders: " + e);
         }
+    }
+    
+    public static List<UserLog> getUserLogs(Connection connection, String userType, int userID) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
+        String query = "SELECT * FROM " + tableName + " WHERE " + userType + "_id = " + userID;
+        List<UserLog> userLogs = new ArrayList<>();
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String loginTimestamp = rs.getString("login_timestamp");
+                String logoutTimestamp = rs.getString("logout_timestamp");
+                
+                UserLog userLog = new UserLog(id, userID, loginTimestamp, logoutTimestamp);
+                userLogs.add(userLog);
+            }
+            
+            System.out.println("Successfully provided User Logs.");
+        }
+        catch(Exception e) {
+            System.out.println("Error trying provide User Logs: " + e);
+        }
+        return userLogs;
+    }
+    
+        public static List<UserLog> getUserLogsDated(Connection connection, String userType, int userID, String date) {
+        String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
+        String query = "SELECT * FROM " + tableName + " WHERE " + userType + "_id = " + userID + " AND login_timestamp LIKE '%" + date + "%'";
+        List<UserLog> userLogs = new ArrayList<>();
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String loginTimestamp = rs.getString("login_timestamp");
+                String logoutTimestamp = rs.getString("logout_timestamp");
+                
+                UserLog userLog = new UserLog(id, userID, loginTimestamp, logoutTimestamp);
+                userLogs.add(userLog);
+            }
+            
+            System.out.println("Successfully provided User Logs.");
+        }
+        catch(Exception e) {
+            System.out.println("Error trying provide User Logs: " + e);
+        }
+        return userLogs;
     }
     
     // Example function.
