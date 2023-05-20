@@ -68,7 +68,7 @@
                     
                     // Redirect to home page
                     conn.close();
-                    response.sendRedirect("home.jsp");
+                    response.sendRedirect("index.jsp");
                     
             } else { %>
             <body>

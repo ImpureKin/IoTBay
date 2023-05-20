@@ -21,7 +21,6 @@
 
             // Check if the user credentials are valid
             boolean isAuthenticated = db.authenticateUser(conn, userType, email, password);
-            System.out.println(isAuthenticated);
 
             if (isAuthenticated) {
                 // Save user details in session
@@ -30,7 +29,7 @@
                 session.setAttribute("log_id", db.logUserLogin(conn, userType, user.getID()));
 
                 // Redirect to the desired page
-                response.sendRedirect("home.jsp");
+                response.sendRedirect("index.jsp");
             } else {
                 // Display error message
                 out.println("<h2>Invalid email or password. Please try again.</h2>");

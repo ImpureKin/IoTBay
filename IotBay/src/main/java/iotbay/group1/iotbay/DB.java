@@ -172,7 +172,7 @@ public class DB {
     public static void deleteAccount(Connection connection, String userType, int userID) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff");
         String deleteAccountQuery = "DELETE FROM " + tableName + " WHERE id = " + userID;
-        String deleteOrdersQuery = "UPDATE 'order' SET status = 'Cancelled' WHERE customer_id = " + userID;
+        String deleteOrdersQuery = "UPDATE 'order' SET status = 'Cancelled' WHERE customer_id = " + userID + " AND status = 'unfulfilled'";
         System.out.println(deleteAccountQuery);
         System.out.println(deleteOrdersQuery);
         try {
@@ -214,7 +214,7 @@ public class DB {
         return userLogs;
     }
     
-        public static List<UserLog> getUserLogsDated(Connection connection, String userType, int userID, String date) {
+    public static List<UserLog> getUserLogsByDate(Connection connection, String userType, int userID, String date) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
         String query = "SELECT * FROM " + tableName + " WHERE " + userType + "_id = " + userID + " AND login_timestamp LIKE '%" + date + "%'";
         List<UserLog> userLogs = new ArrayList<>();
@@ -237,6 +237,21 @@ public class DB {
             System.out.println("Error trying provide User Logs: " + e);
         }
         return userLogs;
+    }
+    
+    public static boolean isCorrectStaffCode(Connection connection, String code) {
+        String query = "SELECT * FROM Staff_Code";
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            
+            String staffCode = rs.getString("staff_code");
+            return (staffCode.equals(code));
+        }
+        catch(Exception e) {
+            System.out.println("Error testing staff code: " + e);
+        }
+        return false;
     }
     
     // Example function.

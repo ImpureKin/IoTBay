@@ -25,9 +25,12 @@
         %>
         
         <p>You are logged in as <%=name%> (<%=email%>)</p>
-        <a href="logout.jsp">Logout</a>
+        <h1>Home</h1>
+        <a href="edit_user.jsp">My Account</a>
         <br>
-        <p><a href="edit_user.jsp">My Account</a></p>
+        <a href="view_logs.jsp">View Login/Logout Logs</a>
+        <br>
+        <a href="logout.jsp">Logout</a>
         
         <% } else { %>
         

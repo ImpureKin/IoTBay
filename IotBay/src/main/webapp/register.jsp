@@ -13,22 +13,15 @@
 <head>
         <meta charset="UTF-8">
         <title>User Registration Form</title>
-        <script>
-            function validateStaffForm() {
-                var staffCode = document.getElementsByName('staffCode')[0].value;
-                if (staffCode !== 'secretPassword123') {
-                    alert('Invalid staff code. Please try again.');
-                    return false;
-                }
-                return true;
-            }
-        </script>
+
 </head>
             <%
             // Retrieve the value (if any) of the form field called 'submitted'
 
             String submitted =  request.getParameter("submitted");
             String userType = request.getParameter("userType");
+            String tos = request.getParameter("tos");
+            
             
             if (userType != null) {
                 session.setAttribute("userType", userType);
@@ -38,10 +31,8 @@
             }
             
             if (submitted != null && submitted.equals("yes")) {
-                String tos = request.getParameter("tos");
                 if (tos != null && tos.equals("true")) {
                 
-                    // Insert into DB (conn, userType, fname, lname, email, pass, phone, address)
                     DB db = new DB();
                     Connection conn = db.getConnection();
                     
@@ -52,20 +43,27 @@
                     String password = request.getParameter("password");
                     String phoneNumber = request.getParameter("phoneNumber");
                     String address = request.getParameter("address");
+                    String code = request.getParameter("staffCode");
                     
-                    if (userType.equalsIgnoreCase("staff")) {
+                    if (userType.equalsIgnoreCase("staff") && db.isCorrectStaffCode(conn, code)) {
                         String role = request.getParameter("role");
                         registerResult = db.registerStaff(conn, firstName, lastName, email, password, role, phoneNumber, address, userType);
                     }
-                    else {
+                    else if (userType.equalsIgnoreCase("customer")){
                         registerResult = db.registerCustomer(conn, firstName, lastName, email, password, phoneNumber, address, userType);
                     }
+                    else {
+                        registerResult = "Failed. Wrong staff code.";
+                    }
                     conn.close();
-                    
                     
                     if (registerResult.equals("Success")) {
                         // Redirect to register_successful.jsp
                         response.sendRedirect("register_successful.jsp");
+                    }
+                    else if (registerResult.equals("Failed. Wrong staff code.")) {
+                        out.println("<h2>Registration failed - wrong staff code inputted. Please try again.</h2>");
+                        out.println("<a href='register.jsp?userType=staff'>Back to register page.</a>");
                     }
                     else if (registerResult.contains("UNIQUE constraint failed:") && registerResult.contains(".email")){
                         // Email already registered. Give error message.
@@ -93,22 +91,7 @@
             %>
                 <p>You must agree to the TOS to register. Please <a href="registration.jsp">go back</a> and agree to the TOS.</p>
             <%
-                }
-            %>
-
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <%    } else { 
+                }} else { 
                         if (userType.equals("Customer")) { %>
             <body>
             <h1>Customer Registration Form</h1>
@@ -150,23 +133,10 @@
                     <input type="hidden" name="userType" value="Customer">
             </form>
             </body>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <% }  else {%>
+            <% }  else { %>
             <body>
             <h1>Staff Registration Form</h1>
-            <form action="register.jsp" method="POST" onsubmit="return validateStaffForm();">
+            <form action="register.jsp" method="POST">
                     <table>
                         <tr>
                                 <td><label for="email">Email:</label></td>
@@ -212,5 +182,5 @@
                     <input type="hidden" name="userType" value="staff">
             </form>
             </body>
-            <%   }} %>
+            <% }} %>
 </html>
