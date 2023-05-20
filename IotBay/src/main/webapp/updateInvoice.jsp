@@ -44,10 +44,13 @@
             boolean r = InvoiceManager.deleteInvoice(i);
             out.println(r);
         }
+            response.sendRedirect("invoiceList.jsp");
         }
         
         %>
-        <p>Passed button is <%=request.getParameter("btn")%></p>
+        <p>You are being redirected</p>
+        <meta http-equiv = "refresh" content = "3; url =invoiceList.jsp " />
+
         <p><a href="invoiceList.jsp">Click here</a> to return to invoice list</p>
         <%} else{%>
         <p>You must be <a href=login.jsp?userType=Customer>logged in</a> to view this page</p>

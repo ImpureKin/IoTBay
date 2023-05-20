@@ -131,7 +131,7 @@ String sql = "SELECT * FROM Customer WHERE id = ?;";
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
                 UserCC a = new UserCC(rs.getInt("id"),rs.getString("credit_card_number"),rs.getString("credit_card_expiry"),rs.getString("credit_card_cvv"));
-                //connection.close();
+                connection.close();
                 return a;
 
             }
@@ -145,11 +145,13 @@ return null;
 
 public static boolean updateCard(UserCC card)
 {
-String cardSql = "UPDATE Customer SET " + " = '"  + "' WHERE id = " + card.getUserId();
+String cardSql = "UPDATE Customer SET credit_card_number = ?,credit_card_expiry = ?,credit_card_cvv = ? WHERE id = " + card.getUserId();
  try {
 Connection connection = DB.getConnection();
 PreparedStatement cardQuery = connection.prepareStatement(cardSql);
-            cardQuery.setDouble(1,card.getUserId());
+            cardQuery.setString(1,card.getCCNumber());
+            cardQuery.setString(2,card.getCCExpiry());
+            cardQuery.setString(3,card.getCCV());
             cardQuery.executeUpdate();
             System.out.println("Updated card details - "  + ".");
             connection.close();

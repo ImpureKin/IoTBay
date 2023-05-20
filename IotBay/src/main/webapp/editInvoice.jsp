@@ -21,14 +21,9 @@
         if (user != null){
         int userID = user.getID(); 
         //UserCC card = InvoiceManager.getUserCC(userID);
-        UserCC card = new UserCC(9,"","","");
+        //UserCC card = new UserCC(9,"","","");
         Invoice current = InvoiceManager.getSingleInvoice(passedID);%>
         <h1>Edit Invoice</h1>
-    
-        <p>Passed Invoice number is <%=passedID%></p>
-        <p>Is current null? the answer is <%=(current==null)%></p>
-        <p>Retrieved Invoice number is <%=current.getId()%></p>
-        <p>Retrieved Invoice amount is <%=current.getAmount()%></p>
          <table border='1' style='border-collapse:collapse'>
             <tr>
                 <th>Invoice ID</th>
@@ -53,23 +48,7 @@
                 </tr>          
 </table>
                 <h2><a href="invoiceList.jsp">Return to Invoice List</a></h2>
-<h2>Your Saved Card Details</h2>
-<table border='1' style='border-collapse:collapse'>
-            <tr>
-                <th>CC number</th>
-                <th>CC exp</th>
-                <th>CCV</th>
-            </tr>
-                <tr>
-                    <form action="updateCard.jsp" method="POST">
-                        <input type="hidden" name="type" value="card" readonly>
-                        <input type="hidden" name="id" value="<%=card.getUserId()%>" readonly>
-                    <td><input type="text" name="CCNum" value="<%=card.getCCNumber()%>" ></td>
-                    <td><input type="text" name="CCEx" value="<%=card.getCCExpiry()%>" ></td>
-                    <td><input type="text" name="CCV" value="<%=card.getCCV()%>" ></td>
-                    <%if (!current.getStatus().equals("PAID")){%><td><input type="submit" name="btn" value="Update" ><input type="submit" name="btn" value="Delete" ></form></td><%};%>
-                </tr>           
-</table>
+
                 <%} else{%>
         <p>You must be <a href=login.jsp?userType=Customer>logged in</a> to view this page</p>
         <% }%>

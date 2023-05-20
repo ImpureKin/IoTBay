@@ -28,7 +28,10 @@
         <a href="logout.jsp">Logout</a>
         <br>
         <p><a href="edit_user.jsp">My Account</a></p>
-        
+       
+        <p><a href="viewCard.jsp">My Card Details</a></p>
+       
+        <p><a href="invoiceList.jsp">My Invoices</a></p>
         <% } else { %>
         
         <p>Welcome to IotBay! To get started, please register or login if you have an existing account.</p>
