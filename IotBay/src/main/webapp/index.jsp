@@ -23,7 +23,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         /* Style the links inside the navigation bar */
         .topnav a {
           text-align: center;
-          padding: 54px 146px;
+          padding: 54px 50px;
         }
         </style>
         <title>IoTBay Item Catalogue</title>
