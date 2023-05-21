@@ -56,7 +56,7 @@ System.out.println("DB connection Closed");
 return list;
 }
 
-public static ArrayList<Invoice> getFilteredInvoices(int user,String date,int payID)
+public static ArrayList<Invoice> getFilteredInvoices(int user,String date,int payID) throws Exception
 {
 //UNUSED method to create a list of filtered invoices
 //Replace view based filtering with this method in the future
@@ -94,7 +94,7 @@ return list;
 }
 
 
-public static Invoice getSingleInvoice(int id)
+public static Invoice getSingleInvoice(int id) throws Exception
 {
 //returns a specific invoice via the invoice ID
 String sql = "SELECT * FROM Invoice WHERE id = ?;";
@@ -173,7 +173,7 @@ PreparedStatement cardQuery = connection.prepareStatement(cardSql);
 
 }
 
-public static boolean updateInvoice(Invoice inv){
+public static boolean updateInvoice(Invoice inv) throws Exception{
     
 //UPDATEs an invoice
   String sql = "UPDATE Invoice SET date = ?,amount = ?,payment_method = ?,status = ?  WHERE id = " + inv.getId();
