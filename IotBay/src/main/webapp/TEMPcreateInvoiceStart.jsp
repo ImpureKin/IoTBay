@@ -22,6 +22,7 @@
             <label>Order Cost</label>
             <input type="number"step="0.01" name="cost"><br>
             <input type="submit" value="Submit" >
+            <button type="button" style="height:20px;width:75px" onClick="location.href='invoiceList.jsp'">Cancel</button>
         </form>
     </body>
 </html>

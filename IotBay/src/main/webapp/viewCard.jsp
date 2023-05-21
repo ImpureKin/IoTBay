@@ -38,7 +38,7 @@
                 </tr>           
 </table>
                     <br>
-                    <p><a href=index.jsp>Go Back</a> to your account</p>
+                    <button type="button" style="height:20px;width:75px" onClick="location.href='invoiceList.jsp'">Cancel</button>
                 <%} else{%>
         <p>You must be <a href=login.jsp?userType=Customer>logged in</a> to view this page</p>
         <% }%>

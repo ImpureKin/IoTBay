@@ -47,7 +47,8 @@
                     <%if (!current.getStatus().equals("PAID")){%><td><input type="submit" name="btn" value="Update" ><input type="submit" name="btn" value="Delete" ></form></td><%};%>
                 </tr>          
 </table>
-                <h2><a href="invoiceList.jsp">Return to Invoice List</a></h2>
+                <br>
+                <button type="button" style="height:20px;width:75px" onClick="location.href='invoiceList.jsp'">Return</button>
 
                 <%} else{%>
         <p>You must be <a href=login.jsp?userType=Customer>logged in</a> to view this page</p>
