@@ -23,6 +23,8 @@
         <h1>Home</h1>
         <a href="edit_user.jsp">My Account</a>
         <br>
+        <a href="invoiceList.jsp">My Invoices</a>
+        <br>
         <a href="view_logs.jsp">View Login/Logout Logs</a>
         <br>
         <a href="logout.jsp">Logout</a>

@@ -18,6 +18,7 @@
         User user = (User) session.getAttribute("User");
         int userID = user.getID();
         String userType = (String) session.getAttribute("userType");
+        int count = 1;
         
         // Get date from page (if one is provided) then display logs based on date selection
         String date = request.getParameter("date");
@@ -59,14 +60,14 @@
             <!--  Loop through list of userLogs and display relevant information -->
             <% for (UserLog log : userLogs) { %>
                 <tr>
-                    <td><%= log.getID() %></td>
+                    <td><%= count %></td>
                     <td>|</td>
                     <td><%= log.getLoginTimestamp() %></td>
                     <td>|</td>
                     <td><%= log.getLogoutTimestamp() %></td>
                     <td>|</td>
                 </tr>
-            <% } %>
+            <% count++;} %>
         </tbody>
     </table>
     <br>
