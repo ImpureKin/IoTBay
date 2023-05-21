@@ -8,6 +8,7 @@ import java.sql.Date;
 /**
  *
  * @author Zoey
+ * Model class for invoices
  */
 public class Invoice {
     private int id;

@@ -13,7 +13,8 @@
         <title>View Card Details</title>
     </head>
     <body>
-        <% 
+        <%
+        //Gets users CC and prefills form
         User user = (User) session.getAttribute("User");
         if (user != null){
         int userID = user.getID(); 

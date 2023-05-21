@@ -17,11 +17,13 @@ import java.util.ArrayList;
 /**
  *
  * @author Zoey
+ * Controller class for invoices and credit card details
  */
 public class InvoiceManager {
 
     public static ArrayList<Invoice> getInvoices(int user)
 {
+//Method creates and returns a list of all invoices for a given user ID
 ArrayList<Invoice> list = new ArrayList<Invoice>();
 String sql = "SELECT * FROM Invoice WHERE customer_id = ?;";
 Connection connection = null;
@@ -31,6 +33,7 @@ Connection connection = null;
             query.setInt(1,user);
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
+                //Old debugging outputs
                 //System.out.println("Select Result: " + rs.getString("id"));
                 //System.out.println("Select Result: " + rs.getString("amount"));
                 Invoice a = new Invoice(rs.getInt("id"),rs.getString("date"),rs.getDouble("amount"),rs.getString("payment_method"),rs.getString("status"),rs.getInt("customer_id"),rs.getInt("order_id"));
@@ -55,6 +58,8 @@ return list;
 
 public static ArrayList<Invoice> getFilteredInvoices(int user,String date,int payID)
 {
+//UNUSED method to create a list of filtered invoices
+//Replace view based filtering with this method in the future
 ArrayList<Invoice> list = new ArrayList<>();
 String sql = "SELECT * FROM Invoice WHERE customer_id = ? AND date = ? OR id = ?;";
 Connection connection = null;
@@ -91,6 +96,7 @@ return list;
 
 public static Invoice getSingleInvoice(int id)
 {
+//returns a specific invoice via the invoice ID
 String sql = "SELECT * FROM Invoice WHERE id = ?;";
 Invoice a = null;
 Connection connection = null;
@@ -107,12 +113,13 @@ Connection connection = null;
             System.out.println("Select from table failed: " + e);
         }
         finally {
-                System.out.println("Single Invoice Finally code block");
+//contains debug lines to troubleshoot database connection closing
+                //System.out.println("Single Invoice Finally code block");
                 if (connection != null) {
-System.out.println("conn is not null");
+//System.out.println("conn is not null");
                     // closes the database connection
                     try {
-        System.out.println("DB connection Closed");
+        //System.out.println("DB connection Closed");
                         connection.close();
                     } catch (SQLException ex) {
                     System.out.println("closing connection failed: " + ex);
@@ -123,6 +130,7 @@ return a;
 }
 public static UserCC getUserCC(int id)
 {
+//READs a users credit card details
 String sql = "SELECT * FROM Customer WHERE id = ?;";
         try {
             Connection connection = DB.getConnection();
@@ -145,6 +153,7 @@ return null;
 
 public static boolean updateCard(UserCC card)
 {
+//UPDATEs a users credit card details
 String cardSql = "UPDATE Customer SET credit_card_number = ?,credit_card_expiry = ?,credit_card_cvv = ? WHERE id = " + card.getUserId();
  try {
 Connection connection = DB.getConnection();
@@ -166,8 +175,7 @@ PreparedStatement cardQuery = connection.prepareStatement(cardSql);
 
 public static boolean updateInvoice(Invoice inv){
     
-if(true)//!inv.getStatus().equals("PAID"))
-{
+//UPDATEs an invoice
   String sql = "UPDATE Invoice SET date = ?,amount = ?,payment_method = ?,status = ?  WHERE id = " + inv.getId();
         
         try {
@@ -188,22 +196,17 @@ Connection connection = DB.getConnection();
         }
 
 }
-else
-{
-return false;
-}
-}
+
 
 
 
 public static boolean createInvoice(Invoice inv)
 {
+//CREATEs a new invoice
         String sql = "INSERT INTO Invoice (date, amount, payment_method, status, customer_id, order_id) VALUES (?,?,?,?,?,?);";
         try {
             Connection connection = DB.getConnection();
             PreparedStatement query = connection.prepareStatement(sql);
-//Date utilDate = new Date( new SimpleDateFormat("yyyy-MM-dd").parse(inv.getDate()).getTime());
-            //Date d = Date.valueOf(inv.getDate());
             query.setString(1,inv.getDate());
             query.setDouble(2,inv.getAmount());
             query.setString(3,inv.getPayment_method());
@@ -211,7 +214,7 @@ public static boolean createInvoice(Invoice inv)
             query.setInt(5,inv.getCust_id());
             query.setInt(6,inv.getOrder_id());
             query.executeUpdate();
-            System.out.println("Inserted to table.");
+            //System.out.println("Inserted to table.");
             connection.close();
         return true;
         }
@@ -224,7 +227,7 @@ public static boolean createInvoice(Invoice inv)
 
 public static boolean deleteInvoice(Invoice inv)
 {
-
+//DELETEs an invoice from DB
     if(!inv.getStatus().equals("PAID"))
 {
   String sql = "DELETE FROM Invoice WHERE id = " + inv.getId();
@@ -249,6 +252,7 @@ return false;
 }
 
 public static void main(String[] args) {
+//Testing code used before view was created
 //        connectDB();
 //        create();
 //        insert();

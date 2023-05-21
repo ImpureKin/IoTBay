@@ -11,6 +11,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>REPLACE THIS PAGE</title>
     </head>
+    <!--This is a temporary page to pass the order number and cost to a new invoice
+    This page should be replaced with a submission form in the order system
+    the data should be auto-generated NOT user input
+    THIS IS FOR TESTING PURPOSES UNTIL ORDER SYSTEM IS COMPLETED-->
     <body>
         <form action="createInvoice.jsp" method="post">
             <label>Order Number</label>

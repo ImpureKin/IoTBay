@@ -13,7 +13,8 @@
         <title>Create a new Invoice</title>
     </head>
     <body>
-        <% 
+        <%
+        //prefills new invoice form with passed data from order form
         User user = (User) session.getAttribute("User");
         if (user != null){
         int userID = user.getID();

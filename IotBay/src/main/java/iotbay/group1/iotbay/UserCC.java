@@ -7,6 +7,7 @@ package iotbay.group1.iotbay;
 /**
  *
  * @author Zoey
+ * Model class for users credit card details
  */
 public class UserCC {
     private int userId;

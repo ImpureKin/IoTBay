@@ -13,7 +13,8 @@
         <title>Creating Invoice</title>
     </head>
     <body>
-        <% 
+        <%
+        //uses passed parameters to create a new Invoice (non strings must be parsed first)
         User user = (User) session.getAttribute("User");
         if (user != null){
             if(request.getParameter("btn").equals("Cancel")){%>

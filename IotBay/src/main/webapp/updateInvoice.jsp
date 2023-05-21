@@ -13,7 +13,8 @@
         <title>Updating</title>
     </head>
     <body>
-        <% 
+        <%
+        //check user is logged in    
         User user = (User) session.getAttribute("User");
         if (user != null){
         int userID = user.getID();
@@ -21,11 +22,10 @@
         String s = request.getParameter("id");
             try{passedID = Integer.parseInt(s);} catch(NumberFormatException ex){
             ex.printStackTrace();}
+        //checks the saved invoice for the submitted invoice ID is not paid and therefore should not be edited
         Invoice i = InvoiceManager.getSingleInvoice(passedID);
-        //check inputs are valid
         if(!i.getStatus().equals("PAID")&&i.getCust_id()==userID){
-            //run an update
-            //date + amount + method
+            //uses the passed data to update the invoice
             if(request.getParameter("btn").equals("Update"))
         {
             Double passedAmount = i.getAmount();
@@ -34,11 +34,12 @@
             i.setDate(request.getParameter("date"));
             i.setAmount(passedAmount);
             i.setPayment_method(request.getParameter("method"));
-            i.setStatus(request.getParameter("status"));
+            i.setStatus(request.getParameter("status").toUpperCase());
             boolean r = InvoiceManager.updateInvoice(i);
             out.println(r);
        
         }
+            //deletes invoice if delete button was clicked
             if(request.getParameter("btn").equals("Delete"))
         {
             boolean r = InvoiceManager.deleteInvoice(i);

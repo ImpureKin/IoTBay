@@ -14,6 +14,7 @@
     </head>
     <body>
          <% 
+        //Gets passed parameters (or empty strings for delete) and updates CC
         User user = (User) session.getAttribute("User");
         if (user != null){
         int userID = user.getID();
@@ -28,7 +29,7 @@
              c = new UserCC(userID,"","","");
              InvoiceManager.updateCard(c);
         }
-        response.sendRedirect("index.jsp");
+        response.sendRedirect("invoiceList.jsp");
         %>
         <p>Passed button is <%=request.getParameter("btn")%></p>
         <p><a href="invoiceList.jsp">Click here</a> to return to invoice list</p>
