@@ -252,4 +252,30 @@ public class DB {
         }
         return false;
     }
+    
+    public static List<Product> getProducts(Connection connection) {
+        String sql = "SELECT * FROM Product;";
+        List<Product> products = new ArrayList<>();
+        try {
+            PreparedStatement query = connection.prepareStatement(sql);
+            ResultSet rs = query.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                String category = rs.getString("category");
+                String subcategory = rs.getString("subcategory");
+                double price = rs.getDouble("price");
+                int quantity = rs.getInt("quantity");
+                int created_by = rs.getInt("created_by");
+                
+                Product product = new Product(id, name, description, category, subcategory, price, quantity, created_by);
+                products.add(product);
+            }
+        }
+        catch(Exception e) {
+            System.out.println("Select from table failed: " + e);
+        }
+        return products;
+    }
 }

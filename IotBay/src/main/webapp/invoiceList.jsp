@@ -54,7 +54,6 @@
             <input type="submit" name="btn" value="Search">
             <input type="submit" name="btn" value="Cancel" >
         </form>
-        
         <br>
          <!-- Table to display obtained Invoices -->
         <table border='1' style='border-collapse:collapse'>
@@ -94,6 +93,8 @@
                 </tr>
             <%}%>            
 </table>
+<br>
+<button type="button" style="height:20px;width:75px" onClick="location.href='index.jsp'">Cancel</button>
         <%} else{%>
         <h1>No Invoices Found</h1>
         <%};} else{%>
