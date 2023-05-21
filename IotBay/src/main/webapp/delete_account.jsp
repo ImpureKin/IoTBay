@@ -16,8 +16,7 @@
     <body>
         <%
             // Create a connection to the database
-            DB db = new DB();
-            Connection conn = db.getConnection();
+            Connection conn = DB.getConnection();
             
             // Get User and UserType from Session
             String userType = (String) session.getAttribute("userType");
@@ -27,7 +26,7 @@
             int userID = user.getID();
             
             // Delete the user's account
-            db.deleteAccount(conn, userType, userID);
+            DB.deleteAccount(conn, userType, userID);
             
             // Close the connection & invalidate the session
             conn.close();

@@ -11,15 +11,14 @@
         <p>You have been logged out. Click <a href="index.jsp">here</a> to return to the main page.</p>
         <%
             // Create a connection to the database
-            DB db = new DB();
-            Connection conn = db.getConnection();
+            Connection conn = DB.getConnection();
             
             // Get the userType and logID from the session
             String userType = (String) session.getAttribute("userType");
             Integer logID = (Integer) session.getAttribute("log_id");
             
             // Log user logout
-            db.logUserLogout(conn, userType, logID);
+            DB.logUserLogout(conn, userType, logID);
             
             // Close the connection & invalidate the session
             conn.close();

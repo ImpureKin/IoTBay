@@ -10,7 +10,7 @@ import java.util.List;
 public class DB {
     
     // Establish and return connection to the DB
-    public static Connection getConnection() {
+    public static Connection getConnection() throws Exception {
         try {
             Class.forName("org.sqlite.JDBC");
             // LAPTOP CONNECTION
@@ -24,12 +24,12 @@ public class DB {
         }
         catch (Exception e) {
             System.out.println("Connection Failed: " + e);
-            return null;
+            throw e;
         }
     }
 
     // Authenticate a user's login details and return result
-    public boolean authenticateUser(Connection connection, String userType, String email, String password) {
+    public static boolean authenticateUser(Connection connection, String userType, String email, String password) {
         try {
             String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
             String query = "SELECT * FROM " + tableName + " WHERE email = '" + email + "' AND password = '" + password + "'";
@@ -45,7 +45,7 @@ public class DB {
     }
     
     // Get User based on email and userType
-    public User getUser(Connection connection, String userType, String email) {
+    public static User getUser(Connection connection, String userType, String email) {
         try {
             String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
             String query = "SELECT * FROM " + tableName + " WHERE email = '" + email + "'";
@@ -76,9 +76,9 @@ public class DB {
     }
     
     // Insert (Register) a customer into the database
-    public String registerCustomer(Connection connection, String firstName, String lastName, String email, String password, String phoneNumber, String address, String userType) {
+    public static String registerCustomer(Connection connection, String firstName, String lastName, String email, String password, String phoneNumber, String address) {
         try {
-            String query = "INSERT INTO " + "Customer" + "(first_name, last_name, email, password, phone_number, address) VALUES (?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO Customer (first_name, last_name, email, password, phone_number, address) VALUES (?, ?, ?, ?, ?, ?);";
             PreparedStatement pstmt = connection.prepareStatement(query);
             pstmt.setString(1, firstName);
             pstmt.setString(2, lastName);
@@ -96,9 +96,9 @@ public class DB {
     }
     
     // Insert (Register) a staff into the database
-    public String registerStaff(Connection connection, String firstName, String lastName, String email, String password, String role, String phoneNumber, String address, String userType) {
+    public static String registerStaff(Connection connection, String firstName, String lastName, String email, String password, String role, String phoneNumber, String address) {
         try {
-            String query = "INSERT INTO " + "Staff" + "(first_name, last_name, email, password, role, phone_number, address) VALUES (?, ?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO Staff (first_name, last_name, email, password, role, phone_number, address) VALUES (?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement pstmt = connection.prepareStatement(query);
             pstmt.setString(1, firstName);
             pstmt.setString(2, lastName);

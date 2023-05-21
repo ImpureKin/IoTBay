@@ -11,8 +11,7 @@
     <body>
     <%
         // Create connection to Database
-        DB db = new DB();
-        Connection conn = db.getConnection();
+        Connection conn = DB.getConnection();
         
         // Create list of user logs, get user, userID and userType from session
         List<UserLog> userLogs;
@@ -23,10 +22,10 @@
         // Get date from page (if one is provided) then display logs based on date selection
         String date = request.getParameter("date");
         if (date != null) {
-            userLogs = db.getUserLogsByDate(conn, userType, userID, date);
+            userLogs = DB.getUserLogsByDate(conn, userType, userID, date);
         }
         else {
-            userLogs = db.getUserLogs(conn, userType, userID);
+            userLogs = DB.getUserLogs(conn, userType, userID);
         }
         // Close connection to DB
         conn.close();

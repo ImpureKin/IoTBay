@@ -16,19 +16,18 @@
             String password = request.getParameter("password");
 
             // Create a connection to the database
-            DB db = new DB();
-            Connection conn = db.getConnection();
+            Connection conn = DB.getConnection();
 
             // Check if the user credentials are valid and exist in the database
-            boolean isAuthenticated = db.authenticateUser(conn, userType, email, password);
+            boolean isAuthenticated = DB.authenticateUser(conn, userType, email, password);
 
             // If the user exists and is using the right credentials
             if (isAuthenticated) {
                 // Save user details in session
-                User user = db.getUser(conn, userType, email);
+                User user = DB.getUser(conn, userType, email);
                 session.setAttribute("User", user);
                 // Save log_id for later when logging logout time
-                session.setAttribute("log_id", db.logUserLogin(conn, userType, user.getID()));
+                session.setAttribute("log_id", DB.logUserLogin(conn, userType, user.getID()));
 
                 // Redirect to index
                 response.sendRedirect("index.jsp");

@@ -18,8 +18,7 @@
             String submitted =  request.getParameter("submitted");
             
             // Establish DB Connection
-            DB db = new DB();
-            Connection conn = db.getConnection();
+            Connection conn = DB.getConnection();
             
             // Get User & Usertype from Session
             User user = (User) session.getAttribute("User");
@@ -109,6 +108,7 @@
                     </table>
                     <br>
                     <input type="submit" value="Save">
+                    <button type="button" style="height:20px;width:75px" onClick="location.href='index.jsp'">Cancel</button>
                     <input type="hidden" name="submitted" value="yes">
                     <br>
                     <h2>Delete your account?</h2>
@@ -160,6 +160,7 @@
                 </table>
                 <br>
                 <input type="submit" value="Save">
+                <button type="button" style="height:20px;width:75px" onClick="location.href='index.jsp'">Cancel</button>
                 <input type="hidden" name="submitted" value="yes">
                 <br>
                 <h2>Delete your account?</h2>

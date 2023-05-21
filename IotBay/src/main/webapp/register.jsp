@@ -30,8 +30,7 @@
                 if (tos != null && tos.equals("true")) {
                     
                     // Create a connection to the DB
-                    DB db = new DB();
-                    Connection conn = db.getConnection();
+                    Connection conn = DB.getConnection();
                     
                     // Initialise required variables
                     String registerResult;
@@ -44,15 +43,15 @@
                     String code = request.getParameter("staffCode");
                     
                     // If the user is staff and has provided the correct staff code (checked against DB)
-                    if (userType.equalsIgnoreCase("staff") && db.isCorrectStaffCode(conn, code)) {
+                    if (userType.equalsIgnoreCase("staff") && DB.isCorrectStaffCode(conn, code)) {
                         String role = request.getParameter("role");
                         // Register staff
-                        registerResult = db.registerStaff(conn, firstName, lastName, email, password, role, phoneNumber, address, userType);
+                        registerResult = DB.registerStaff(conn, firstName, lastName, email, password, role, phoneNumber, address);
                     }
                     // If the user is a customer
                     else if (userType.equalsIgnoreCase("customer")){
                         // Register customer
-                        registerResult = db.registerCustomer(conn, firstName, lastName, email, password, phoneNumber, address, userType);
+                        registerResult = DB.registerCustomer(conn, firstName, lastName, email, password, phoneNumber, address);
                     }
                     // Provided staff code was wrong.
                     else {
