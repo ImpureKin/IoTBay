@@ -1,17 +1,12 @@
-<%-- 
-    Document   : register
-    Created on : 21/03/2023, 4:17:36 PM
-    Author     : eren_
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="iotbay.group1.iotbay.*" %>
 <%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html>
 <script>
-  function redirectToDeleteAccount() {
-    window.location.href = "delete_account.jsp";
+    // Redirect to account deletion JSP
+    function redirectToDeleteAccount() {
+      window.location.href = "delete_account.jsp";
   }
 </script>
 <head>
@@ -19,28 +14,30 @@
         <title>My Account</title>
 </head>
             <%
-            // Retrieve the value (if any) of the form field called 'submitted'
+            // Retrieve value of 'submitted' from request
             String submitted =  request.getParameter("submitted");
             
-            // Get user & db connection
-            User user = (User) session.getAttribute("User");
-            String userType = user.getUserType();
+            // Establish DB Connection
             DB db = new DB();
             Connection conn = db.getConnection();
+            
+            // Get User & Usertype from Session
+            User user = (User) session.getAttribute("User");
+            String userType = user.getUserType();
 
-            // If the Java variable 'submitted' is not null AND 'submitted' equals "yes"
+            // If form was submitted then perform the below
             if (submitted != null && submitted.equals("yes")) {
                     
-                // Get input from My Account form & session/existing user details
-                    String email = request.getParameter("email");
-                    String firstName = request.getParameter("firstName");
-                    String lastName = request.getParameter("lastName");
-                    String password = request.getParameter("password");
-                    String role = request.getParameter("role");
-                    String phoneNumber = request.getParameter("phoneNumber");
-                    String address = request.getParameter("address");
+                // Get input from My Account form & existing user details
+                String email = request.getParameter("email");
+                String firstName = request.getParameter("firstName");
+                String lastName = request.getParameter("lastName");
+                String password = request.getParameter("password");
+                String role = request.getParameter("role");
+                String phoneNumber = request.getParameter("phoneNumber");
+                String address = request.getParameter("address");
                     
-                // Go through each value. If something is inputted (not null), update user
+                // Go through each value. If a change has been made, update User details
                 if (!email.isEmpty()) {
                     user.setEmail(conn, email);
                 }
@@ -63,16 +60,17 @@
                     user.setAddress(conn, address);
                 }
                     
-                    // Update session's User
-                    session.setAttribute("User", user);
-                    
-                    // Redirect to home page
-                    conn.close();
-                    response.sendRedirect("index.jsp");
+                // Update session's User
+                session.setAttribute("User", user);
+
+                // Close connection & edirect to home page
+                conn.close();
+                response.sendRedirect("index.jsp");
                     
             } else { %>
             <body>
             <h1>My Account</h1>
+            <!--  If the user is a customer, display the form for changing a customer's details -->
             <% if (userType.equalsIgnoreCase("customer")) { %>
             <form action="edit_user.jsp" method="POST">
                     <p>Your email is: <%= user.getEmail() %></p>
@@ -118,6 +116,7 @@
                     <button type="button" onclick="redirectToDeleteAccount()">Delete Account</button>
             </form>
             <% } else { %>
+            <!--  If the user is a staff, display the form for changing a staff's details -->
             <form action="edit_user.jsp" method="POST">
                 <p>Your email is: <%= user.getEmail() %></p>
                 <p>Your first name is: <%= user.getFirstName() %></p>

@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
 <html>
     <head>
         <style>
@@ -59,16 +54,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <div class="titlecenter">
             <h1>-- Login --</h1>
         </div>
-        <%         
+        <%  // Get Usertype from request to determine which form to display
             String userType = request.getParameter("userType");
             if (userType != null) {
+                // Store UserType into session for cross-page use
                 session.setAttribute("userType", userType);
             }
             else {
+                // If there is not a userType in the request, get the existing from the Session
                 userType = (String) session.getAttribute("userType");
             }
-        
-        if (userType.equals("customer")) { %>
+        %>
         <div class="textcenter">
             <form action="login_check.jsp" method="post">
                 <label for="email">Email:</label><br><br>
@@ -76,21 +72,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 <label for="password">Password:</label><br><br>
                 <input type="password" id="password" name="password" required><br><br><br>
                 <input type="submit" value="Submit">
-                <input type="hidden" name="userType" value="customer">
             </form>
         </div>
-        <% } else { %>
-        <div class="textcenter">
-            <form action="login_check.jsp" method="post">
-                <label for="email">Email:</label><br><br>
-                <input type="email" id="email" name="email" required><br><br>
-                <label for="password">Password:</label><br><br>
-                <input type="password" id="password" name="password" required><br><br><br>
-                <input type="submit" value="Submit">
-                <input type="hidden" name="userType" value="staff">
-            </form>
-        </div>
-        <% } %>
         <div class="buttoncenter">
             <button type="button" style="height:40px;width:100px" onClick="location.href='index.jsp'">Return</button><br><br><br><br><br><br><br><br>
         </div>

@@ -1,9 +1,3 @@
-<%-- 
-    Document   : register
-    Created on : 21/03/2023, 4:17:36 PM
-    Author     : eren_
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%@ page import="iotbay.group1.iotbay.*" %>
@@ -20,13 +14,14 @@
             DB db = new DB();
             Connection conn = db.getConnection();
             
+            // Get the userType and logID from the session
             String userType = (String) session.getAttribute("userType");
             Integer logID = (Integer) session.getAttribute("log_id");
             
             // Log user logout
             db.logUserLogout(conn, userType, logID);
             
-            // Close the connection
+            // Close the connection & invalidate the session
             conn.close();
             session.invalidate();
         %>

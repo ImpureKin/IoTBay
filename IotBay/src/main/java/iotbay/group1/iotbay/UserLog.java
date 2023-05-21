@@ -1,20 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package iotbay.group1.iotbay;
 
-/**
- *
- * @author Big Pops
- */
+// Create class for UserLog
 public class UserLog {
     private int id;
     private int userID;
     private String loginTimestamp;
     private String logoutTimestamp;
-    
-    // Customer
+
+    // UserLog Constructor
     public UserLog(int id, int userID, String loginTimestamp, String logoutTimestamp) {
         this.id = id;
         this.userID = userID;
@@ -22,6 +15,7 @@ public class UserLog {
         this.logoutTimestamp = logoutTimestamp;
     }
     
+    // Getters & Setters
     public int getID() {
         return id;
     }
@@ -34,6 +28,7 @@ public class UserLog {
         return loginTimestamp;
     }
 
+    // If logoutTimestamp is null, return as "Not Recorded"
     public String getLogoutTimestamp() {
         if (logoutTimestamp == null) {
             logoutTimestamp = "Not Recorded";

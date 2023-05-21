@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package iotbay.group1.iotbay;
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,9 +8,8 @@ import java.util.List;
  * @author Big Pops
  */
 public class DB {
-
-    Connection con = null;
     
+    // Establish and return connection to the DB
     public static Connection getConnection() {
         try {
             Class.forName("org.sqlite.JDBC");
@@ -33,7 +28,7 @@ public class DB {
         }
     }
 
-    // Authenticate a user during login
+    // Authenticate a user's login details and return result
     public boolean authenticateUser(Connection connection, String userType, String email, String password) {
         try {
             String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
@@ -49,7 +44,7 @@ public class DB {
         }
     }
     
-    // Get User to store in Session
+    // Get User based on email and userType
     public User getUser(Connection connection, String userType, String email) {
         try {
             String tableName = userType.equalsIgnoreCase("customer") ? "customer" : "staff";
@@ -64,6 +59,7 @@ public class DB {
             String phoneNumber = rs.getString("phone_number");
             String address = rs.getString("address");
             
+            // Based on whether user is staff or customer, use User() to create a new User to be returned
             if (userType.equalsIgnoreCase("staff")) {
                 String role = rs.getString("role");
                 User user = new User(id, firstName, lastName, email, password, role, phoneNumber, address, userType);
@@ -79,7 +75,7 @@ public class DB {
         }
     }
     
-    // Insert a registered customer into DB
+    // Insert (Register) a customer into the database
     public String registerCustomer(Connection connection, String firstName, String lastName, String email, String password, String phoneNumber, String address, String userType) {
         try {
             String query = "INSERT INTO " + "Customer" + "(first_name, last_name, email, password, phone_number, address) VALUES (?, ?, ?, ?, ?, ?);";
@@ -99,7 +95,7 @@ public class DB {
         }
     }
     
-    // Insert a registered customer into DB
+    // Insert (Register) a staff into the database
     public String registerStaff(Connection connection, String firstName, String lastName, String email, String password, String role, String phoneNumber, String address, String userType) {
         try {
             String query = "INSERT INTO " + "Staff" + "(first_name, last_name, email, password, role, phone_number, address) VALUES (?, ?, ?, ?, ?, ?, ?);";
@@ -120,6 +116,7 @@ public class DB {
         }
     }
     
+    // Store/Log a user's login timestamp into the database then return auto-generated logID
     public static int logUserLogin(Connection connection, String userType, int userID) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
         String query = "INSERT INTO " + tableName + "(" + userType + "_id, login_timestamp) VALUES (" + userID + ", CURRENT_TIMESTAMP);";
@@ -127,12 +124,11 @@ public class DB {
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             pstmt.executeUpdate();
-            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+            ResultSet generatedKeys = pstmt.getGeneratedKeys(); // Store auto generated logID and return for later use
             
             if (generatedKeys.next()) {
                 loginID = generatedKeys.getInt(1);
             }
-            
             System.out.println("Logged user login.");
         }
         catch(Exception e) {
@@ -141,6 +137,7 @@ public class DB {
         return loginID;
     }
     
+    // Store/Log a user's logout timestamp into the database based on logID generated from login
     public static void logUserLogout(Connection connection, String userType, int logID) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
         String query = "UPDATE " + tableName + " SET logout_timestamp = CURRENT_TIMESTAMP WHERE id = " + logID;
@@ -154,7 +151,7 @@ public class DB {
         }
     }
     
-    // Update user detail.
+    // Update a user's details
     public static void updateUserDetail(Connection connection, String userType, String field, String value, int userID) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff");
         String query = "UPDATE " + tableName + " SET " + field + " = '" + value + "' WHERE id = " + userID;
@@ -168,7 +165,7 @@ public class DB {
         }
     }
     
-    // Delete user account.
+    // Delete user account
     public static void deleteAccount(Connection connection, String userType, int userID) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff");
         String deleteAccountQuery = "DELETE FROM " + tableName + " WHERE id = " + userID;
@@ -189,10 +186,11 @@ public class DB {
         }
     }
     
+    // Get all user logs by storing then returning multiple logs in a UserLog List
     public static List<UserLog> getUserLogs(Connection connection, String userType, int userID) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
         String query = "SELECT * FROM " + tableName + " WHERE " + userType + "_id = " + userID;
-        List<UserLog> userLogs = new ArrayList<>();
+        List<UserLog> userLogs = new ArrayList<>(); // Make new list of type UserLog
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
@@ -202,10 +200,10 @@ public class DB {
                 String loginTimestamp = rs.getString("login_timestamp");
                 String logoutTimestamp = rs.getString("logout_timestamp");
                 
+                // For each result, create a new userLog then add to list
                 UserLog userLog = new UserLog(id, userID, loginTimestamp, logoutTimestamp);
                 userLogs.add(userLog);
             }
-            
             System.out.println("Successfully provided User Logs.");
         }
         catch(Exception e) {
@@ -214,10 +212,11 @@ public class DB {
         return userLogs;
     }
     
+    // Get all user logs (BASED ON PROVIDED DATE) by storing then returning multiple logs in a UserLog List
     public static List<UserLog> getUserLogsByDate(Connection connection, String userType, int userID, String date) {
         String tableName = (userType.equalsIgnoreCase("customer") ? "customer" : "staff") + "_Log";
-        String query = "SELECT * FROM " + tableName + " WHERE " + userType + "_id = " + userID + " AND login_timestamp LIKE '%" + date + "%'";
-        List<UserLog> userLogs = new ArrayList<>();
+        String query = "SELECT * FROM " + tableName + " WHERE " + userType + "_id = " + userID + " AND login_timestamp LIKE '%" + date + "%'"; // Use 'LIKE' with '%%' to check if the date is anywhere in a column/timestamp
+        List<UserLog> userLogs = new ArrayList<>(); // Make new list of type UserLog
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
@@ -227,10 +226,10 @@ public class DB {
                 String loginTimestamp = rs.getString("login_timestamp");
                 String logoutTimestamp = rs.getString("logout_timestamp");
                 
+                // For each result, create a new userLog then add to list
                 UserLog userLog = new UserLog(id, userID, loginTimestamp, logoutTimestamp);
                 userLogs.add(userLog);
             }
-            
             System.out.println("Successfully provided User Logs.");
         }
         catch(Exception e) {
@@ -239,12 +238,12 @@ public class DB {
         return userLogs;
     }
     
+    // Check if provided staff code is correct
     public static boolean isCorrectStaffCode(Connection connection, String code) {
         String query = "SELECT * FROM Staff_Code";
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
-            
             String staffCode = rs.getString("staff_code");
             return (staffCode.equals(code));
         }
@@ -252,38 +251,5 @@ public class DB {
             System.out.println("Error testing staff code: " + e);
         }
         return false;
-    }
-    
-    // Example function.
-    public static void insert(Connection connection) {
-        String sql = "INSERT INTO `customer` (first_name, last_name, email, password, phone_number, address, credit_card_number, credit_card_expiry, credit_card_cvv) VALUES ('Madison','Walker','madison.walker@hotmail.com','pE8j#M5t','0423456789','17 Maple Road','4525567812345678','07/23','777');";
-        try {
-            // Connection connection = getConnection();
-            PreparedStatement query = connection.prepareStatement(sql);
-            query.executeUpdate();
-            System.out.println("Inserted to table.");
-        }
-        catch(Exception e) {
-            System.out.println("Insert to table failed: " + e);
-        }
-    }
-    
-    // Example function.
-    public static void select(Connection connection) {
-        String sql = "SELECT * FROM Staff_Log;";
-        try {
-            //Connection connection = getConnection();
-            PreparedStatement query = connection.prepareStatement(sql);
-            ResultSet rs = query.executeQuery();
-            while (rs.next()) {
-                System.out.println("Select Result: " + rs.getString("login_timestamp"));
-            }
-        }
-        catch(Exception e) {
-            System.out.println("Select from table failed: " + e);
-        }
-    }
-    public static void main(String args[]) {
-        select(getConnection());
     }
 }

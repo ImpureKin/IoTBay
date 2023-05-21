@@ -1,9 +1,3 @@
-<%-- 
-    Document   : view_logs
-    Created on : 20/05/2023, 9:47:52 AM
-    Author     : Big Pops
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.List" %>
@@ -16,13 +10,17 @@
     </head>
     <body>
     <%
+        // Create connection to Database
         DB db = new DB();
         Connection conn = db.getConnection();
+        
+        // Create list of user logs, get user, userID and userType from session
         List<UserLog> userLogs;
         User user = (User) session.getAttribute("User");
         int userID = user.getID();
         String userType = (String) session.getAttribute("userType");
         
+        // Get date from page (if one is provided) then display logs based on date selection
         String date = request.getParameter("date");
         if (date != null) {
             userLogs = db.getUserLogsByDate(conn, userType, userID, date);
@@ -30,6 +28,7 @@
         else {
             userLogs = db.getUserLogs(conn, userType, userID);
         }
+        // Close connection to DB
         conn.close();
     %>
     <h1>User Logs</h1>
@@ -58,6 +57,7 @@
             </tr>
         </thead>
         <tbody>
+            <!--  Loop through list of userLogs and display relevant information -->
             <% for (UserLog log : userLogs) { %>
                 <tr>
                     <td><%= log.getID() %></td>

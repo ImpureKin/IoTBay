@@ -1,7 +1,7 @@
 package iotbay.group1.iotbay;
 import java.sql.*;
-import iotbay.group1.iotbay.DB;
 
+// Class for User
 public class User {
     private int id;
     private String firstName;
@@ -13,7 +13,7 @@ public class User {
     private String address;
     private String userType;
     
-    // Customer
+    // Customer Constructor
     public User(int id, String firstName, String lastName, String email, String password, String phoneNumber, String address, String userType) {
         this.id = id;
         this.firstName = firstName;
@@ -25,7 +25,7 @@ public class User {
         this.userType = userType;
     }
     
-    // Staff
+    // Staff Constructor
     public User(int id, String firstName, String lastName, String email, String password, String role, String phoneNumber, String address, String userType) {
         this.id = id;
         this.firstName = firstName;
@@ -39,6 +39,7 @@ public class User {
     }
 
     // Getters and Setters
+    // Setters also update a User's details in the DB
     public int getID() {
         return id;
     }
@@ -116,10 +117,5 @@ public class User {
     
     public String getUserType() {
         return userType;
-    }
-
-    // Likely not needed.
-    public void setuserType(Connection connection, String userType) {
-        this.userType = userType;
     }
 }
